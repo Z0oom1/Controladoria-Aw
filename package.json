@@ -21,6 +21,7 @@
     "files": [
       "package.json",
       "frontend/**/*",
+      "node_modules/electron-log/**/*",
       "node_modules/electron-updater/**/*"
     ],
     "win": {
@@ -63,6 +64,7 @@
   "author": "Caio Rod",
   "license": "ISC",
   "dependencies": {
+    "electron-log": "^5.1.0",
     "electron-updater": "^6.1.1"
   },
   "devDependencies": {
