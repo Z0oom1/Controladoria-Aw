@@ -965,11 +965,14 @@
     </div>
     <div id="modalUnifiedApproval" class="modal-overlay" style="z-index: 8000;">
     </div>
-    <!-- ========================================================================== -->
+     <!-- ========================================================================== -->
     <!--  WILSON CORE 2.4.3 - SISTEMA MODULARIZADO                                -->
     <!--  Carrega todos os módulos na ordem correta de dependência                -->
     <!-- ========================================================================== -->
-
+    <!-- CAMADA 0: Detecção de Plataforma (DEVE SER PRIMEIRO) -->
+    <script src="../js/modules/platform-detector.js"></script>
+    <!-- CAMADA 0.5: Auto-Update (Apenas Electron) -->
+    <script src="../js/modules/electron-updater.js"></script>
     <!-- CAMADA 1: Fundação (Validações) -->
     <script src="../js/modules/validators.js"></script>
 
@@ -1035,14 +1038,7 @@
         // Funções visuais de carregamento
         function showLoading() { document.getElementById("loading-screen").classList.remove("hidden"); }
         function hideLoading() { document.getElementById("loading-screen").classList.add("hidden"); }
-        window.onload = () => { showLoading(); setTimeout(hideLoading, 1500); };
-
-        if (window.require) {
-            const { ipcRenderer } = require('electron');
-            document.getElementById('minBtn').addEventListener('click', () => ipcRenderer.send('minimize-app'));
-            document.getElementById('maxBtn').addEventListener('click', () => ipcRenderer.send('maximize-app'));
-            document.getElementById('closeBtn').addEventListener('click', () => ipcRenderer.send('close-app'));
-        }
+        window.onload = () => { showLoading(); setTimeout(hideLoading, 1500); };}
 
         // --- CORREÇÃO DO FETCH (API) ---
         // Sobrescrevemos o fetch global para sempre usar o URL do servidor
@@ -1055,6 +1051,8 @@
             }
             return originalFetch(url, options);
         };
+        
+        // Nota: Controles de Electron agora gerenciados por platform-detector.js
     </script>
 </body>
 

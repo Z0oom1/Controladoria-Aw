@@ -77,10 +77,21 @@ body {
     z-index: 9999999;
 }
 
+/* Oculta botões de controle em modo WEB */
+body.platform-web .window-controls {
+    display: none !important;
+}
+
+/* Mostra botões de controle em modo ELECTRON */
+body.platform-electron .window-controls {
+    display: flex !important;
+}
+
 .window-controls {
     display: flex;
     gap: 8px;
     -webkit-app-region: no-drag;
+    transition: opacity 0.3s ease;
 }
 
 .control-btn {

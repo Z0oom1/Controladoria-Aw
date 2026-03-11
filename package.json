@@ -7,25 +7,64 @@
     "start": "electron .",
     "server": "node server/server.js",
     "dev": "concurrently -k \"node server/server.js\" \"vite\" \"electron .\"",
-    "build": "vite build && electron-builder"
+    "build": "vite build && electron-builder",
+    "build:win": "vite build && electron-builder --win",
+    "build:portable": "vite build && electron-builder --win portable"
   },
   "build": {
     "appId": "com.wilson.controladoria",
     "productName": "Controladoria AW",
     "directories": {
-      "output": "dist"
-    },
-    "win": {
-      "target": "nsis",
-      "icon": "frontend/Imgs/logo.png"
+      "output": "dist",
+      "buildResources": "frontend/Imgs"
     },
     "files": [
       "package.json",
-      "frontend/**/*"
-    ]
+      "frontend/**/*",
+      "node_modules/electron-updater/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        "portable"
+      ],
+      "icon": "frontend/Imgs/logo.png",
+      "certificateFile": null,
+      "certificatePassword": null,
+      "signingHashAlgorithms": [
+        "sha256"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Controladoria AW",
+      "installerIcon": "frontend/Imgs/logo.png",
+      "uninstallerIcon": "frontend/Imgs/logo.png",
+      "installerHeaderIcon": "frontend/Imgs/logo.png",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.${ext}"
+    },
+    "publish": {
+      "provider": "generic",
+      "url": "https://seu-servidor.com/updates/"
+    }
   },
   "author": "Caio Rod",
   "license": "ISC",
+  "dependencies": {
+    "electron-updater": "^6.1.1"
+  },
   "devDependencies": {
     "concurrently": "^9.2.1",
     "electron": "latest",

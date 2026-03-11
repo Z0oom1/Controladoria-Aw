@@ -122,6 +122,7 @@
         </div>
     </div>
 
+    <script src="../js/modules/platform-detector.js"></script>
     <script src="../js/login.js"></script>
     
     <script>
@@ -134,22 +135,7 @@
             // Stub caso seja chamado pelo body
         }
 
-        // LÓGICA DA BARRA DE TÍTULO (ELECTRON)
-        if (window.require) {
-            const { ipcRenderer } = require('electron');
-
-            document.getElementById('minBtn').addEventListener('click', () => {
-                ipcRenderer.send('minimize-app');
-            });
-
-            document.getElementById('maxBtn').addEventListener('click', () => {
-                ipcRenderer.send('maximize-app');
-            });
-
-            document.getElementById('closeBtn').addEventListener('click', () => {
-                ipcRenderer.send('close-app');
-            });
-        }
+        // Nota: Controles de Electron agora gerenciados por platform-detector.js
     </script>
 </body>
 
