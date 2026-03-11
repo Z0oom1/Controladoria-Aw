@@ -74,29 +74,33 @@
         const isEncarregado = userRoleRaw.includes('encarreg');
     </script>
 
-    <nav class="main-sidebar">
+    <nav class="main-sidebar" id="sidebar">
+        <div class="sidebar-resizer" id="sidebarResizer"></div>
+        <div class="toggle-sidebar-btn" id="sidebarToggle" onclick="toggleSidebarMode()">
+            <i class="fas fa-chevron-left" id="sidebarToggleIcon"></i>
+        </div>
         <div class="logo-area">
-            <img src="../Imgs/logo-sf.png" alt="logo" style="width: 50px; height: 50px; border-radius:50%;">
-            <span>CONTROLADORIA</span>
+            <img src="../Imgs/logo-sf.png" alt="logo" style="width: 40px; height: 40px; border-radius:50%; flex-shrink: 0;">
+            <span id="sidebarLogoText">CONTROLADORIA</span>
         </div>
         <div class="menu-items">
             <a class="menu-item active" id="menuPatio" onclick="navTo('patio', this)"><i class="fas fa-truck"></i>
-                Controle de Pátio</a>
-            <a class="menu-item" onclick="navTo('mapas', this)"><i class="fas fa-clipboard-check"></i> Mapas Cegos</a>
+                <span>Controle de Pátio</span></a>
+            <a class="menu-item" onclick="navTo('mapas', this)"><i class="fas fa-clipboard-check"></i> <span>Mapas Cegos</span></a>
             <a class="menu-item" id="menuMateriaPrima" onclick="navTo('materia-prima', this)"><i
-                    class="fas fa-weight-hanging"></i>Pesagem</a>
+                    class="fas fa-weight-hanging"></i><span>Pesagem</span></a>
             <a class="menu-item" id="menuCarregamento" onclick="navTo('carregamento', this)"><i
-                    class="fas fa-dolly"></i> Carregamento</a>
-            <a class="menu-item" onclick="navTo('relatorios', this)"><i class="fas fa-chart-pie"></i> Relatórios</a>
+                    class="fas fa-dolly"></i> <span>Carregamento</span></a>
+            <a class="menu-item" onclick="navTo('relatorios', this)"><i class="fas fa-chart-pie"></i> <span>Relatórios</span></a>
             <a id="menuDashboard" class="menu-item" onclick="navTo('dashboard', this)"><i class="fas fa-chart-line"></i>
-                Dashboard</a>
-            <a id="menuCadastros" class="menu-item" onclick="navTo('cadastros', this)"><i class="fas fa-address-book"></i> Cadastros</a>
-            <a class="menu-item" onclick="navTo('produtos', this)"><i class="fas fa-boxes"></i> Produtos</a>
+                <span>Dashboard</span></a>
+            <a id="menuCadastros" class="menu-item" onclick="navTo('cadastros', this)"><i class="fas fa-address-book"></i> <span>Cadastros</span></a>
+            <a class="menu-item" onclick="navTo('produtos', this)"><i class="fas fa-boxes"></i> <span>Produtos</span></a>
             <a class="menu-item" id="menuNotif" onclick="navTo('notificacoes', this)"><i class="fas fa-bell"></i>
-                Notificações <span class="notification-badge" id="badgeNotif">0</span></a>
-            <a class="menu-item" onclick="navTo('perfil', this)"><i class="fas fa-user-circle"></i> Perfil / Admin</a>
+                <span>Notificações</span> <span class="notification-badge" id="badgeNotif">0</span></a>
+            <a class="menu-item" onclick="navTo('perfil', this)"><i class="fas fa-user-circle"></i> <span>Perfil / Admin</span></a>
             <div style="margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1)">
-                <a class="menu-item" onclick="navTo('configuracoes', this)"><i class="fas fa-cog"></i> Configurações</a>
+                <a class="menu-item" onclick="navTo('configuracoes', this)"><i class="fas fa-cog"></i> <span>Configurações</span></a>
             </div>
         </div>
         <div class="user-footer">
@@ -985,6 +989,7 @@
 
     <!-- CAMADA 4: Interface (Navegação e UI) -->
     <script src="../js/modules/ui-navigation.js"></script>
+    <script src="../js/modules/sidebar.js"></script>
 
     <!-- CAMADA 5: Regras de Negócio -->
     <script src="../js/modules/patio.js"></script>

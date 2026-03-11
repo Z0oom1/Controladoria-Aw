@@ -169,7 +169,103 @@ body.platform-electron .window-controls {
     position: fixed;
     top: var(--titlebar-height);
     left: 0;
-    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.1s ease;
+    min-width: 60px;
+}
+
+.sidebar-resizer {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    cursor: col-resize;
+    background: transparent;
+    transition: background 0.2s;
+    z-index: 3001;
+}
+
+.sidebar-resizer:hover, .sidebar-resizer.resizing {
+    background: var(--primary);
+}
+
+.main-sidebar.collapsed {
+    width: 60px !important;
+}
+
+.main-sidebar.collapsed .logo-area span,
+.main-sidebar.collapsed .menu-item span,
+.main-sidebar.collapsed .user-footer div:not(:first-child),
+.main-sidebar.collapsed .menu-item .notification-badge {
+    display: none;
+}
+
+.main-sidebar.collapsed .logo-area {
+    justify-content: center;
+    padding: 0;
+}
+
+.main-sidebar.collapsed .menu-item {
+    justify-content: center;
+    padding: 12px 0;
+}
+
+.main-sidebar.collapsed .user-footer {
+    justify-content: center;
+    padding: 15px 0;
+}
+
+.main-sidebar.collapsed .menu-item i {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.toggle-sidebar-btn {
+    position: absolute;
+    bottom: 80px;
+    right: -12px;
+    width: 24px;
+    height: 24px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 3002;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    border: 2px solid var(--secondary);
+    transition: transform 0.2s;
+}
+
+.toggle-sidebar-btn:hover {
+    transform: scale(1.1);
+}
+
+.main-sidebar.collapsed .toggle-sidebar-btn {
+    right: 18px;
+}
+
+/* Esconder texto quando a largura for pequena */
+.main-sidebar.hide-text .logo-area span,
+.main-sidebar.hide-text .menu-item span,
+.main-sidebar.hide-text .user-footer div:not(:first-child),
+.main-sidebar.hide-text .menu-item .notification-badge {
+    display: none;
+}
+
+.main-sidebar.hide-text .logo-area {
+    justify-content: center;
+    padding: 0;
+}
+
+.main-sidebar.hide-text .menu-item {
+    justify-content: center;
+}
+
+.main-sidebar.hide-text .user-footer {
+    justify-content: center;
 }
 
 .logo-area {
@@ -261,7 +357,7 @@ body.platform-electron .window-controls {
     height: calc(100vh - var(--titlebar-height));
     background-color: var(--bg-body);
     margin-left: var(--sidebar-width);
-    transition: margin-left 0.3s ease;
+    transition: margin-left 0.1s ease;
 }
 
 .top-header {

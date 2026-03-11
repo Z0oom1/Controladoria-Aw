@@ -47,6 +47,7 @@ function renderProductsView() {
             <td style="font-size:0.85rem; color:#666;">${supDisplay}</td>
             <td>
                 <button class="btn btn-edit btn-small" onclick="openCadModal('produto', '${p.id}')"><i class="fas fa-edit"></i> Editar</button>
+                <button class="btn btn-edit btn-small" style="color:#ef4444; border-color:#ef4444;" onclick="deleteCadastro('produto', '${p.id}')"><i class="fas fa-trash"></i> Excluir</button>
             </td>
         `;
         tbody.appendChild(tr);

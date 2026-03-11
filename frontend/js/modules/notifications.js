@@ -95,30 +95,62 @@ function checkForNotifications() {
     }
 
     // 2. Notificação de LIBERAÇÃO (Para Recebimento/Portaria)
-    const call = patioData.find(c => 
-        c.status === 'LIBERADO' && 
-        !c.recebimentoNotified && 
-        (c.chegada || '').startsWith(todayStr)
-    );
+    if (isRecebimento) {
+        const call = patioData.find(c => 
+            c.status === 'LIBERADO' && 
+            !c.recebimentoNotified && 
+            (c.chegada || '').startsWith(todayStr)
+        );
 
-    if (call && isRecebimento) {
-        if (!notifiedEvents.has(call.id)) {
-            // Formata a mensagem: Quem liberou + Fornecedor + Placa
-            const releaser = call.releasedBy || 'Operador';
-            const msg = `${releaser} liberou ${call.empresa} para descarga\nPlaca: ${call.placa}`;
+        if (call && !notifiedEvents.has(call.id)) {
+            let shouldNotify = false;
+            const now = new Date();
+            const releaseTime = call.releasedAt ? new Date(call.releasedAt) : null;
+            const loginTime = loggedUser.loginAt ? new Date(loggedUser.loginAt) : null;
 
-            showNotificationPopup('release', call);
-            
-            sendSystemNotification(
-                "Veículo Liberado!",
-                msg,
-                'patio',
-                call.id,
-                { icon: '../Imgs/logo-sf.png' }
-            );
-            
-            notifiedEvents.add(call.id);
-            return; 
+            if (releaseTime) {
+                // Caso 1: Usuário já estava logado no momento da liberação
+                if (loginTime && loginTime <= releaseTime) {
+                    shouldNotify = true;
+                } 
+                // Caso 2: Usuário entrou até 5 minutos após a liberação
+                else if (loginTime && loginTime > releaseTime) {
+                    const diffMs = loginTime - releaseTime;
+                    const diffMin = diffMs / (1000 * 60);
+                    if (diffMin <= 5) {
+                        shouldNotify = true;
+                    }
+                }
+                // Fallback se não houver loginTime (não deve acontecer com a mudança no login.js)
+                else if (!loginTime) {
+                    shouldNotify = true;
+                }
+            } else {
+                // Fallback se não houver releasedAt (caminhões liberados antes da atualização)
+                shouldNotify = true;
+            }
+
+            if (shouldNotify) {
+                const releaser = call.releasedBy || 'Operador';
+                const msg = `${releaser} liberou ${call.empresa} para descarga\nPlaca: ${call.placa}`;
+
+                showNotificationPopup('release', call);
+                
+                sendSystemNotification(
+                    "Veículo Liberado!",
+                    msg,
+                    'patio',
+                    call.id,
+                    { icon: '../Imgs/logo-sf.png' }
+                );
+                
+                notifiedEvents.add(call.id);
+                return; 
+            } else {
+                // Se não deve notificar (passou de 5 min), marcamos como notificado para este usuário localmente
+                // para não ficar reprocessando este caminhão no loop.
+                notifiedEvents.add(call.id);
+            }
         }
     }
 

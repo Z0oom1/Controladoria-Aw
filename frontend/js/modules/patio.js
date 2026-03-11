@@ -615,6 +615,7 @@ function changeStatus(id, st) {
         if (st === 'LIBERADO') { 
             patioData[i].releasedBy = loggedUser.username; 
             patioData[i].recebimentoNotified = false; 
+            patioData[i].releasedAt = getBrazilTime();
         }
         if (st === 'ENTROU') { 
             const m = mpData.find(x => x.id === id); 

@@ -79,6 +79,7 @@ async function fazerLogin() {
 // Login: armazenamento de sessão e redirecionamento
 function loginComUsuario(user) {
     if (user.token) sessionStorage.setItem('aw_token', user.token);
+    user.loginAt = new Date().toISOString();
     sessionStorage.setItem('loggedInUser', JSON.stringify(user));
     
     // REDIRECIONAMENTO CORRIGIDO PARA VITE

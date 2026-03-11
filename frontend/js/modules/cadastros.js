@@ -606,6 +606,7 @@ function deleteCadastro(type, id) {
 
     saveAll();
     renderCadastros();
+    if (typeof renderProductsView === 'function') renderProductsView();
 }
 
 function populateSelect(selectId, dataArr, displayField = 'nome') {
