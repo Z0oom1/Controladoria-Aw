@@ -49,6 +49,10 @@ function renderMapList() {
         `;
 
         el.onclick = () => { loadMap(m.id); };
+        el.oncontextmenu = (e) => {
+            e.preventDefault();
+            openContextMenu(e.clientX, e.clientY, m);
+        };
         l.appendChild(el);
     });
 }
@@ -76,9 +80,10 @@ function deleteMap(id) {
 
 function openContextMenu(x, y, m) {
     const menu = document.getElementById('ctxMenu');
-    let html = `<div class="ctx-item" style="color:red" onclick="openDivergenceModal('${m.id}')">Divergência</div>`;
+    let html = `<div class="ctx-item" onclick="openEditTruck('${m.id}')"><i class="fas fa-edit"></i> Editar Veículo</div>`;
+    html += `<div class="ctx-item" style="color:red" onclick="openDivergenceModal('${m.id}')">Divergência</div>`;
     if (isConferente) html += `<div class="ctx-item" onclick="triggerRequest('edit','${m.id}')">Solicitar Edição</div>`;
-    else html += `<div class="ctx-item" onclick="forceUnlockMap('${m.id}')">Forçar Edição</div><div class="ctx-item" style="color:red" onclick="deleteMap('${m.id}')">Excluir</div>`;
+    else html += `<div class="ctx-item" onclick="forceUnlockMap('${m.id}')">Forçar Edição</div><div class="ctx-item" style="color:red" onclick="confirmDeleteTruck('${m.id}')"><i class="fas fa-trash"></i> Excluir...</div>`;
     menu.innerHTML = html; menu.style.left = x + 'px'; menu.style.top = y + 'px'; menu.style.display = 'block';
 }
 

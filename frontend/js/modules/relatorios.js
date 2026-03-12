@@ -222,7 +222,29 @@ function openReportDetails(indexOrId, typeOverride) {
     let html = '';
     let buttons = '';
 
-    if (type === 'divergencias') {
+    if (type === 'patio' || type === 'carregamento' || type === 'materia-prima' || type === 'mapas') {
+        const dateStr = item.chegada || item.date || item.checkin;
+        html = `
+            <div style="text-align:center; margin-bottom:15px;">
+                <h3 style="margin:0; color:var(--primary);">${item.placa || item.cavalo || 'S/ PLACA'}</h3>
+                <small style="color:#666; text-transform:uppercase;">${type.toUpperCase()}</small>
+            </div>
+            <div class="form-grid">
+                <div><strong>Data/Hora:</strong><br>${dateStr ? new Date(dateStr).toLocaleString() : '---'}</div>
+                <div><strong>Motorista/Empresa:</strong><br>${item.motorista || item.empresa || '---'}</div>
+                <div><strong>Status:</strong><br>${item.status || (item.launched ? 'Lançado' : 'Rascunho')}</div>
+                <div><strong>Local/Produto:</strong><br>${item.localSpec || item.produto || '---'}</div>
+            </div>
+            ${item.liq ? `<div style="margin-top:10px;"><strong>Peso Líquido:</strong> ${item.liq} Kg</div>` : ''}
+        `;
+
+        if (type === 'mapas' || (type === 'patio' && item.id)) {
+            buttons += `<button class="btn btn-save" onclick="document.getElementById('modalReportDetail').style.display='none'; navTo('mapas'); loadMap('${item.id}')"><i class="fas fa-file-alt"></i> ABRIR MAPA CEGO</button>`;
+        }
+        if (type === 'materia-prima' || type === 'patio') {
+            buttons += `<button class="btn btn-edit" onclick="document.getElementById('modalReportDetail').style.display='none'; navTo('materia-prima');"><i class="fas fa-weight"></i> VER NA PESAGEM</button>`;
+        }
+    } else if (type === 'divergencias') {
         const diffColor = item.diff > 0 ? 'green' : 'red';
         const signal = item.diff > 0 ? '+' : '';
 

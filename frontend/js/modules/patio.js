@@ -604,6 +604,10 @@ function renderPatio() {
                 if (icon) icon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
             } 
         };
+        card.oncontextmenu = (e) => {
+            e.preventDefault();
+            openTruckContextMenu(e.clientX, e.clientY, c.id);
+        };
         container.appendChild(card);
     });
 }
@@ -642,6 +646,7 @@ function openTruckContextMenu(x, y, id) {
 
     m.innerHTML = `
         <div class="ctx-item" onclick="openEditTruck('${id}')"><i class="fas fa-edit"></i> Editar Veículo</div>
+        <div class="ctx-item" onclick="navTo('mapas'); loadMap('${id}'); closeContextMenu();"><i class="fas fa-file-alt"></i> Abrir Mapa Cego</div>
         <div class="ctx-item" onclick="confirmDeleteTruck('${id}')" style="color:red"><i class="fas fa-trash"></i> Excluir...</div>
     `;
 
@@ -681,13 +686,15 @@ function executeDeleteTruck() {
         patioData = patioData.filter(x => x.id !== id);
         mapData = mapData.filter(x => x.id !== id);
         mpData = mpData.filter(x => x.id !== id);
-        requests = requests.filter(r => true);
+        if (typeof carregamentoData !== 'undefined') {
+            carregamentoData = carregamentoData.filter(x => x.id !== id);
+        }
     }
 
     saveAll();
     renderPatio();
-    if (document.getElementById('view-mapas').classList.contains('active')) renderMapList();
-    if (document.getElementById('view-materia-prima').classList.contains('active')) renderMateriaPrima();
+    if (typeof renderMapList === 'function') renderMapList();
+    if (typeof renderMateriaPrima === 'function') renderMateriaPrima();
 
     document.getElementById('modalDeleteConfirm').style.display = 'none';
     alert("Registro excluído com sucesso.");
@@ -785,6 +792,13 @@ function saveEditTruck() {
         if (truck.status !== 'SAIU') {
             truck.local = newSec.c;
             truck.localSpec = newSec.n;
+        }
+
+        // Atualizar também na pesagem (mpData)
+        const mpIndex = mpData.findIndex(m => m.id === id);
+        if (mpIndex > -1) {
+            mpData[mpIndex].placa = placa;
+            // Outros campos se necessário
         }
 
         if (editTmpItems && editTmpItems.length > 0) {
