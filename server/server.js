@@ -108,5 +108,38 @@ app.delete('/api/reset', (req, res) => {
     })
 })
 
+app.post('/api/import-products', (req, res) => {
+    const { spawn } = require('child_process')
+    const scriptPath = path.join(__dirname, 'corrigir_importacao.js')
+    
+    const child = spawn('node', [scriptPath])
+    let output = ''
+    let errorOutput = ''
+    
+    child.stdout.on('data', (data) => {
+        output += data.toString()
+    })
+    
+    child.stderr.on('data', (data) => {
+        errorOutput += data.toString()
+    })
+    
+    child.on('close', (code) => {
+        if (code === 0) {
+            io.emit('atualizar_sistema')
+            res.json({ 
+                success: true, 
+                message: 'Produtos importados com sucesso!',
+                output: output
+            })
+        } else {
+            res.status(500).json({ 
+                error: 'Erro ao executar importacao',
+                details: errorOutput || output
+            })
+        }
+    })
+})
+
 server.listen(PORT, '0.0.0.0', () => console.log(`🚀 Servidor rodando na porta ${PORT}`))
 process.on('SIGINT', () => db.close(() => process.exit(0)))

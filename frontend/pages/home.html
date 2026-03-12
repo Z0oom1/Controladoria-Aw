@@ -76,12 +76,12 @@
 
     <nav class="main-sidebar" id="sidebar">
         <div class="sidebar-resizer" id="sidebarResizer"></div>
-        <div class="toggle-sidebar-btn" id="sidebarToggle" onclick="toggleSidebarMode()">
-            <i class="fas fa-chevron-left" id="sidebarToggleIcon"></i>
-        </div>
         <div class="logo-area">
             <img src="../Imgs/logo-sf.png" alt="logo" style="width: 40px; height: 40px; border-radius:50%; flex-shrink: 0;">
             <span id="sidebarLogoText">CONTROLADORIA</span>
+            <button class="toggle-sidebar-btn" id="sidebarToggle" onclick="toggleSidebarMode()" title="Alternar tamanho do menu">
+                <i class="fas fa-chevron-left" id="sidebarToggleIcon"></i>
+            </button>
         </div>
         <div class="menu-items">
             <a class="menu-item active" id="menuPatio" onclick="navTo('patio', this)"><i class="fas fa-truck"></i>
@@ -545,15 +545,21 @@
                 <div class="settings-card">
                     <h4><i class="fas fa-database"></i> Dados</h4>
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                        <button class="btn btn-edit" onclick="backupData()">Backup</button>
+                        <button class="btn btn-save" onclick="backupData()" title="Fazer backup e importar produtos">
+                            <i class="fas fa-download"></i> Backup + Importar
+                        </button>
                         <button class="btn btn-edit"
-                            onclick="document.getElementById('fileRestore').click()">Restaurar</button>
+                            onclick="document.getElementById('fileRestore').click()" title="Restaurar dados de um backup anterior">
+                            <i class="fas fa-upload"></i> Restaurar
+                        </button>
                         <input type="file" id="fileRestore" style="display:none" onchange="restoreData(this)"
                             accept=".json">
                     </div>
                     <button class="btn btn-edit"
-                        style="color:var(--status-danger); border-color:var(--status-danger); width:100%; margin-top:15px;"
-                        onclick="clearAllData()">RESETAR DADOS</button>
+                        style="color:#dc2626; border-color:#dc2626; width:100%; margin-top:15px; font-weight:bold;"
+                        onclick="clearAllData()" title="Apagar todos os dados do sistema (irreversível)">
+                        <i class="fas fa-trash-alt"></i> RESETAR TODOS OS DADOS
+                    </button>
                 </div>
             </div>
         </div>

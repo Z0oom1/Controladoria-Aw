@@ -221,30 +221,41 @@ body.platform-electron .window-controls {
 }
 
 .toggle-sidebar-btn {
-    position: absolute;
-    bottom: 80px;
-    right: -12px;
-    width: 24px;
-    height: 24px;
-    background: var(--primary);
+    position: relative;
+    margin-left: auto;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.1);
     color: white;
-    border-radius: 50%;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     z-index: 3002;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    border: 2px solid var(--secondary);
-    transition: transform 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
 }
 
 .toggle-sidebar-btn:hover {
-    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateX(-2px);
+}
+
+.toggle-sidebar-btn:active {
+    transform: translateX(0);
+}
+
+.toggle-sidebar-btn i {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
 }
 
 .main-sidebar.collapsed .toggle-sidebar-btn {
-    right: 18px;
+    position: relative;
+    right: auto;
 }
 
 /* Esconder texto quando a largura for pequena */
@@ -270,7 +281,7 @@ body.platform-electron .window-controls {
 
 .logo-area {
     height: var(--header-height);
-    padding: 0 20px;
+    padding: 0 15px;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -278,6 +289,7 @@ body.platform-electron .window-controls {
     font-size: 1.1rem;
     background: rgba(0, 0, 0, 0.2);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    flex-wrap: nowrap;
 }
 
 .menu-items {

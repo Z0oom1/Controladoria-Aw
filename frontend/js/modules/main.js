@@ -129,3 +129,188 @@ async function saveFirstAccessPassword() {
 const today = getBrazilTime().split('T')[0];
 
 console.log("Main.js carregado - Aguardando DOMContentLoaded...");
+
+
+// ===================================================================================
+//          FUNÇÕES DE BACKUP, RESTORE E RESET DE DADOS
+// ===================================================================================
+
+/**
+ * Faz download de todos os dados do servidor em formato JSON
+ */
+async function backupData() {
+    try {
+        showLoading();
+        
+        // Coleta todos os dados do servidor
+        const response = await fetch(`${API_URL}/api/sync?t=${Date.now()}`, { cache: "no-store" });
+        if (!response.ok) throw new Error("Falha ao conectar ao servidor");
+        
+        const allData = await response.json();
+        
+        // Cria um objeto com timestamp
+        const backup = {
+            timestamp: new Date().toISOString(),
+            data: allData
+        };
+        
+        // Converte para JSON e faz download
+        const dataStr = JSON.stringify(backup, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `backup_controladoria_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        hideLoading();
+        alert('✅ Backup realizado com sucesso!');
+        
+        // Após o backup, executa o script de importação de produtos
+        console.log("Iniciando importação de produtos...");
+        await executeProductImport();
+        
+    } catch (error) {
+        hideLoading();
+        console.error("Erro ao fazer backup:", error);
+        alert(`❌ Erro ao fazer backup: ${error.message}`);
+    }
+}
+
+/**
+ * Executa o script de importação de produtos via API do servidor
+ */
+async function executeProductImport() {
+    try {
+        showLoading();
+        
+        // Faz uma requisição ao servidor para executar o script de importação
+        const response = await fetch(`${API_URL}/api/import-products`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'import' })
+        });
+        
+        if (!response.ok) {
+            // Se a rota não existir, tenta executar via comando direto
+            console.warn("Rota de importação não disponível. Tente executar manualmente: node corrigir_importacao.js");
+            hideLoading();
+            alert('⚠️ Para importar os produtos, execute no servidor:\n\nnode corrigir_importacao.js');
+            return;
+        }
+        
+        const result = await response.json();
+        hideLoading();
+        
+        alert(`✅ Importação concluída!\n\n${result.message || 'Produtos importados com sucesso.'}`);
+        
+        // Recarrega os dados
+        await loadDataFromServer();
+        refreshCurrentView();
+        
+    } catch (error) {
+        hideLoading();
+        console.error("Erro ao executar importação:", error);
+        alert('⚠️ Para importar os produtos, execute no servidor:\n\nnode corrigir_importacao.js');
+    }
+}
+
+/**
+ * Restaura dados de um arquivo JSON de backup
+ */
+async function restoreData(fileInput) {
+    try {
+        if (!fileInput.files || !fileInput.files[0]) return;
+        
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = async (e) => {
+            try {
+                showLoading();
+                
+                const content = JSON.parse(e.target.result);
+                const dataToRestore = content.data || content; // Compatibilidade com backups antigos
+                
+                // Confirma a restauração
+                if (!confirm('⚠️ Isso vai APAGAR todos os dados atuais e restaurar o backup. Tem certeza?')) {
+                    hideLoading();
+                    return;
+                }
+                
+                // Envia os dados para o servidor restaurar
+                const response = await fetch(`${API_URL}/api/restore`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataToRestore)
+                });
+                
+                if (!response.ok) throw new Error("Falha ao restaurar no servidor");
+                
+                // Atualiza os dados locais
+                await loadDataFromServer();
+                
+                hideLoading();
+                alert('✅ Dados restaurados com sucesso!');
+                refreshCurrentView();
+                
+            } catch (error) {
+                hideLoading();
+                console.error("Erro ao restaurar:", error);
+                alert(`❌ Erro ao restaurar: ${error.message}`);
+            }
+        };
+        
+        reader.readAsText(file);
+        
+    } catch (error) {
+        console.error("Erro ao processar arquivo:", error);
+        alert(`❌ Erro ao processar arquivo: ${error.message}`);
+    }
+}
+
+/**
+ * Apaga todos os dados do sistema com confirmação dupla
+ */
+async function clearAllData() {
+    try {
+        // Primeira confirmação
+        if (!confirm('⚠️ ATENÇÃO: Isso vai APAGAR TODOS OS DADOS do sistema!\n\nTem certeza?')) {
+            return;
+        }
+        
+        // Segunda confirmação para garantir
+        if (!confirm('🚨 ÚLTIMA CHANCE: Todos os dados serão perdidos permanentemente!\n\nDeseja continuar?')) {
+            return;
+        }
+        
+        showLoading();
+        
+        // Faz a requisição para resetar no servidor
+        const response = await fetch(`${API_URL}/api/reset`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (!response.ok) throw new Error("Falha ao resetar no servidor");
+        
+        // Limpa o localStorage também
+        localStorage.clear();
+        
+        hideLoading();
+        alert('✅ Todos os dados foram apagados com sucesso!');
+        
+        // Recarrega a página
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+        
+    } catch (error) {
+        hideLoading();
+        console.error("Erro ao limpar dados:", error);
+        alert(`❌ Erro ao limpar dados: ${error.message}`);
+    }
+}
