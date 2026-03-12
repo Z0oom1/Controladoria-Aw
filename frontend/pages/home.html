@@ -1049,7 +1049,7 @@
         // Funções visuais de carregamento
         function showLoading() { document.getElementById("loading-screen").classList.remove("hidden"); }
         function hideLoading() { document.getElementById("loading-screen").classList.add("hidden"); }
-        window.onload = () => { showLoading(); setTimeout(hideLoading, 1500); };}
+        window.onload = () => { showLoading(); setTimeout(hideLoading, 1500); };
 
         // --- CORREÇÃO DO FETCH (API) ---
         // Sobrescrevemos o fetch global para sempre usar o URL do servidor

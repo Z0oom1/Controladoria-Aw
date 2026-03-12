@@ -1,11 +1,3 @@
-#!/usr/bin/env node
-
-/**
- * Script para gerar arquivo latest.yml para auto-update
- * Uso: node scripts/generate-latest.js <versao> <diretorio-dist>
- * Exemplo: node scripts/generate-latest.js 3.6.10 ./dist
- */
-
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
