@@ -580,6 +580,8 @@ function renderPatio() {
             else if (c.status === 'ENTROU') btn = `<button onclick="changeStatus('${c.id}','SAIU')" class="btn btn-edit" style="width:100%; margin-top:5px;">SAÍDA</button>`;
         }
 
+        const laudoColor = c.comLaudo ? '#22c55e' : '#eab308';
+        const laudoText = c.comLaudo ? 'COM LAUDO' : 'SEM LAUDO';
         card.innerHTML = `
             <div class="card-basic" style="display:flex; justify-content:space-between; align-items:center;">
                 <div>
@@ -589,7 +591,10 @@ function renderPatio() {
                 </div>
                 <i class="fas fa-chevron-down" style="color:#aaa; font-size:0.9rem; transition: transform 0.2s;"></i>
             </div>
-            <div class="status-badge st-${c.status === 'FILA' ? 'wait' : (c.status === 'LIBERADO' ? 'called' : (c.status === 'ENTROU' ? 'ok' : 'out'))}">${c.status}</div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+                <div class="status-badge st-${c.status === 'FILA' ? 'wait' : (c.status === 'LIBERADO' ? 'called' : (c.status === 'ENTROU' ? 'ok' : 'out'))}">${c.status}</div>
+                <div style="background:${laudoColor}; color:white; padding:4px 12px; border-radius:6px; font-size:0.75rem; font-weight:600; text-transform:uppercase; display:flex; align-items:center;">${laudoText}</div>
+            </div>
             <div class="card-expanded-content" style="display:none">
                 ${(c.cargas?.[0]?.produtos?.map(p => `<div>${p.nome}</div>`).join('') || '')}
                 ${btn}
